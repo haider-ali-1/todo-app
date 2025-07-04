@@ -15,82 +15,48 @@ import { makeBtn, makeElement, getRelativeTime } from "./utils";
 import type { Todo, SortFilters } from "./types/Todo";
 
 let todos: Todo[] = [];
-let sortedTodos: Todo[] = [];
-
 let id: number = 1;
 let editingTodoId: number | null = null;
 
-sortSelect.addEventListener("change", (e: Event) => {
-  const target = e.target as HTMLSelectElement;
-  console.log(todos);
-  sortedTodos = [...todos];
+function getVisibleTodos(): Todo[] {
+  const { value } = sortSelect;
+  let sortedTodos = [...todos];
 
-  switch (target.value as SortFilters) {
+  switch (value as SortFilters) {
     case "newest":
-      sortedTodos = sortedTodos.sort((a, b) => {
-        const aMs = new Date(a.createdAt).getTime();
-        const bMs = new Date(b.createdAt).getTime();
+      return sortedTodos.sort(
+        (a, b) =>
+          +new Date(b.createdAt).getTime() - +new Date(a.createdAt).getTime()
+      );
 
-        if (aMs < bMs) {
-          return 1;
-        } else if (aMs > bMs) {
-          return -1;
-        } else {
-          return 0;
-        }
-      });
-      RenderTodos(sortedTodos);
-      break;
+    // haider -> 100030 1
+    // maha -> 100050   2
 
     case "oldest":
-      sortedTodos = sortedTodos.sort((a, b) => {
-        const aMs = new Date(a.createdAt).getTime();
-        const bMs = new Date(b.createdAt).getTime();
-
-        if (aMs > bMs) {
-          return 1;
-        } else if (aMs < bMs) {
-          return -1;
-        } else {
-          return 0;
-        }
-      });
-      RenderTodos(sortedTodos);
-      break;
+      return sortedTodos.sort(
+        (a, b) =>
+          +new Date(a.createdAt).getTime() - +new Date(b.createdAt).getTime()
+      );
 
     case "az":
-      sortedTodos = sortedTodos.sort((a, b) => {
-        const aFl = a.title[0].toLowerCase();
-        const bFl = b.title[0].toLowerCase();
-
-        if (aFl > bFl) {
-          return 1;
-        } else if (aFl < bFl) {
-          return -1;
-        } else {
-          return 0;
-        }
-      });
-      RenderTodos(sortedTodos);
-      break;
+      return sortedTodos.sort((a, b) =>
+        a.title.localeCompare(b.title, undefined, { sensitivity: "base" })
+      );
 
     case "za":
-      sortedTodos = sortedTodos.sort((a, b) => {
-        const aFl = a.title[0].toLowerCase();
-        const bFl = b.title[0].toLowerCase();
+      return sortedTodos.sort((a, b) =>
+        b.title.localeCompare(a.title, undefined, { sensitivity: "base" })
+      );
 
-        if (aFl < bFl) {
-          return 1;
-        } else if (aFl > bFl) {
-          return -1;
-        } else {
-          return 0;
-        }
-      });
-      RenderTodos(sortedTodos);
-      break;
+    default:
+      return sortedTodos;
   }
-});
+}
+const render = () => {
+  RenderTodos(getVisibleTodos());
+};
+
+sortSelect.addEventListener("change", render);
 
 modalForm.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -100,7 +66,7 @@ modalForm.addEventListener("submit", (e) => {
   }
   editingTodoId = null;
   toggleBackdropAndModal();
-  RenderTodos(sortedTodos);
+  render();
 });
 
 function toggleBackdropAndModal() {
@@ -130,10 +96,10 @@ function openEditModal(todo: Todo): void {
   editingTodoId = todo.id;
 }
 
-function RenderTodos(todosArr: Todo[]) {
+function RenderTodos(todosParam: Todo[]) {
   todoItems.innerHTML = "";
 
-  if (todosArr.length === 0) {
+  if (todosParam.length === 0) {
     const p = makeElement("p");
     p.textContent = "Nothing to show here";
     p.style.textAlign = "center";
@@ -141,7 +107,7 @@ function RenderTodos(todosArr: Todo[]) {
     return;
   }
 
-  todosArr.forEach((todo) => {
+  todosParam.forEach((todo) => {
     const todoItemElem = makeElement("div", "todo__item");
 
     const titleElem = makeElement("p", "todo__title");
@@ -149,15 +115,15 @@ function RenderTodos(todosArr: Todo[]) {
 
     const controlsDiv = makeElement("div", "todo__controls");
 
-    const editBtn = makeBtn(editBtnSvg, ["todo__btn", "todo__btn--delete"]);
+    const editBtn = makeBtn(editBtnSvg, ["todo__btn", "todo__btn--edit"]);
     editBtn.addEventListener("click", () => {
       openEditModal(todo);
     });
 
     const delBtn = makeBtn(deleteBtnSvg, ["todo__btn", "todo__btn--delete"]);
     delBtn.addEventListener("click", () => {
-      todos = todosArr.filter((t) => t.id !== todo.id);
-      RenderTodos(todos);
+      todos = todos.filter((t) => t.id !== todo.id);
+      render();
     });
 
     const timeElem = makeElement("span", "todo__time");
@@ -176,14 +142,7 @@ function RenderTodos(todosArr: Todo[]) {
 }
 
 function addTodo(title: string) {
-  const targetSelect = "oldest" as SortFilters;
-
-  for (const option of sortSelect.options) {
-    if (option.value === targetSelect) {
-      option.selected = true;
-      break;
-    }
-  }
+  sortSelect.value = "oldest";
 
   todos.push({
     id: id++,
@@ -191,7 +150,7 @@ function addTodo(title: string) {
     isEdit: false,
     createdAt: new Date().toISOString(),
   });
-  RenderTodos(todos);
+  render();
 }
 
 addTodoBtn.addEventListener("click", (e) => {
@@ -217,7 +176,7 @@ backdrop.addEventListener("click", (e) => {
   editingTodoId = null;
 });
 
-RenderTodos(todos);
+render();
 
 setInterval(() => {
   updateRelativeTimes();
