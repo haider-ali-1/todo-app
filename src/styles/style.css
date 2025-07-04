@@ -1,0 +1,248 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
+
+:root {
+  --font-family: "Lato", sans-serif;
+
+  --clr-navy-900: hsl(210, 29%, 16%);
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  line-height: 1.5;
+  font-family: var(--font-family);
+  font-size: 1.5rem;
+  background: linear-gradient(to right, #6a3093, #a044ff);
+}
+
+a {
+  text-decoration: none;
+  display: inline-block;
+}
+
+input,
+button,
+select {
+  font: inherit;
+  outline: none;
+}
+
+.container {
+  max-width: 400px;
+  width: 100%;
+  padding-inline: 1rem;
+  margin-inline: auto;
+}
+
+/* Section Todo */
+
+.backdrop {
+  display: none;
+  background-color: hsla(0, 0%, 0%, 0.8);
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  backdrop-filter: blur(5px);
+}
+
+.backdrop--active {
+  display: block;
+}
+
+.modal {
+  display: none;
+  /* display: flex; */
+  padding-inline: 1rem;
+  align-items: center;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2;
+}
+
+.modal--open {
+  display: flex;
+}
+
+.modal__form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  background-color: white;
+  padding-block: 7rem;
+  padding: 6rem 2rem;
+  border-radius: 6px;
+}
+
+.modal .form__input {
+  width: 100%;
+  border-radius: 6px;
+  border: 2px solid hsl(210, 29%, 16%);
+  padding: 0.75rem 1rem;
+}
+
+.modal__btns {
+  display: flex;
+  gap: 1rem;
+}
+
+.modal__btns .btn {
+  padding: 0.5rem 2rem;
+  border-radius: 6px;
+  border: none;
+  background-color: hsl(282, 44%, 47%);
+  color: white;
+}
+
+.todo {
+  padding-inline: 1rem;
+  padding-top: 10rem;
+}
+
+.todo__heading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-inline: 0.5rem;
+}
+
+.todo__title--heading {
+  font-size: 2rem;
+  font-weight: 900;
+  color: hsl(210, 29%, 22%);
+}
+
+.todo__icon {
+  display: flex;
+}
+
+.todo__icon svg {
+  height: 3rem;
+}
+
+.container--todo {
+  border-radius: 8px;
+  padding: 2rem;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.todo__form {
+  display: flex;
+  border-radius: 9999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.todo__btn {
+  border: none;
+}
+
+.todo__input {
+  background-color: hsl(184, 6%, 81%);
+  border: none;
+  flex: 1;
+  padding-block: 1.25rem;
+  padding-inline: 2rem calc(7rem + 10px);
+}
+
+.todo__btn--add {
+  background-color: hsl(282, 44%, 47%);
+  color: white;
+  border-radius: 9999px;
+  position: absolute;
+  width: 7rem;
+  height: 100%;
+  right: 0;
+}
+
+.todo__item {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding-inline: 1.5rem;
+  padding-block: 0.5rem;
+}
+
+.todo__item .todo__title {
+  flex: 1;
+  text-overflow: ellipsis;
+  font-size: 1.8rem;
+}
+
+/* When click edit this class will apply */
+.todo__item .todo__input--edit {
+  flex: 1;
+  font-size: 1.8rem;
+  border: 1px solid hsl(282, 44%, 47%);
+  padding-inline: 0.75rem;
+}
+/* When click edit this class will apply End */
+
+.todo__time {
+  font-size: 1.2rem;
+}
+
+.todo__item svg {
+  /* height: 24px; */
+  color: hsl(210, 29%, 22%);
+}
+
+.todo__controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.todo__btn--save svg {
+  height: 14px;
+}
+
+.todo__item .todo__btn {
+  height: 24px;
+  width: 24px;
+}
+
+.todo__btn--delete svg {
+  fill: hsl(210, 29%, 22%);
+}
+
+.todo__btn--edit,
+.todo__btn--delete,
+.todo__btn--save {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+}
+
+.todo__btn:hover {
+  cursor: pointer;
+}
+
+.todo__sort {
+  text-align: center;
+}
+
+.sort-select {
+  max-width: 200px;
+  width: 100%;
+  border: 1px solid hsl(282, 44%, 47%);
+  padding: 0.4rem 0.5rem;
+}
