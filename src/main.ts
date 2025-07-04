@@ -22,6 +22,7 @@ let editingTodoId: number | null = null;
 
 sortSelect.addEventListener("change", (e: Event) => {
   const target = e.target as HTMLSelectElement;
+  console.log(todos);
   sortedTodos = [...todos];
 
   switch (target.value as SortFilters) {
@@ -99,7 +100,7 @@ modalForm.addEventListener("submit", (e) => {
   }
   editingTodoId = null;
   toggleBackdropAndModal();
-  RenderTodos(todos);
+  RenderTodos(sortedTodos);
 });
 
 function toggleBackdropAndModal() {
@@ -129,10 +130,10 @@ function openEditModal(todo: Todo): void {
   editingTodoId = todo.id;
 }
 
-function RenderTodos(todos: Todo[]) {
+function RenderTodos(todosArr: Todo[]) {
   todoItems.innerHTML = "";
 
-  if (todos.length === 0) {
+  if (todosArr.length === 0) {
     const p = makeElement("p");
     p.textContent = "Nothing to show here";
     p.style.textAlign = "center";
@@ -140,7 +141,7 @@ function RenderTodos(todos: Todo[]) {
     return;
   }
 
-  todos.forEach((todo) => {
+  todosArr.forEach((todo) => {
     const todoItemElem = makeElement("div", "todo__item");
 
     const titleElem = makeElement("p", "todo__title");
@@ -155,7 +156,7 @@ function RenderTodos(todos: Todo[]) {
 
     const delBtn = makeBtn(deleteBtnSvg, ["todo__btn", "todo__btn--delete"]);
     delBtn.addEventListener("click", () => {
-      todos = todos.filter((t) => t.id !== todo.id);
+      todos = todosArr.filter((t) => t.id !== todo.id);
       RenderTodos(todos);
     });
 
